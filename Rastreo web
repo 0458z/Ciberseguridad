@@ -1,0 +1,23 @@
+import requests
+from bs4 import BeautifulSoup, Comment
+import re
+
+# URL del servidor local
+# Aqui es importante tomar en cuenta que debemos especificar en que puerto se realiza la coneccion 
+# Y la direccion ip de nuestro servidor we
+url = "http://127.0.0.1:8000/victima.html"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+# Extraer enlaces
+# Recopila todos los enlaces posibles dentro de una pagina web.
+links = [a["href"] for a in soup.find_all("a", href=True)]
+print("Enlaces encontrados:", links)
+
+# Extraer comentarios HTML
+comments = [comment for comment in soup.find_all(string=lambda text: isinstance(text, Comment))]
+print("Comentarios:", comments)
+
+# Extraer correos electrónicos
+emails = re.findall(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', soup.text)
+print("Correos electrónicos detectados:", emails)
